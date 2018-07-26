@@ -66,7 +66,7 @@ function FeatureTooltip(options) {
         // restore style of no longer highlighted features and highlight current ones
         if (this.highlightStyle) {
             while(this.hlf.length>0) {
-                var ff=this_.hlf.shift();
+                var ff=this.hlf.shift();
                 ff.f.setStyle(ff.s);
             }
             for (var i=0;i<fs.length;i++) {
@@ -78,7 +78,7 @@ function FeatureTooltip(options) {
         }
         // set tooltip content
         var cont=this.text(fs);
-        this_.div.style.display=cont?'':'none';
+        this.div.style.display=cont?'':'none';
         if (cont) {
             this.ovl.setPosition(e.coordinate);
             this.div.innerHTML=cont;
@@ -86,11 +86,11 @@ function FeatureTooltip(options) {
     };
     /** enable tooltips */
     this.enable=function() {
-        this.map.on('pointermove', this_.show);
+        this.map.on('pointermove', this.show);
     };
     /** disable tooltips */
     this.disable=function() {
-        this.map.un('pointermove', this_.show);
+        this.map.un('pointermove', this.show);
         this.show(false);
     };
     
