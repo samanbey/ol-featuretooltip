@@ -1,0 +1,6 @@
+.ol-featuretooltip {
+    background: rgba(255,255,255,.7);
+    padding: 3px;
+    border: 1px solid rgba(0,60,136,.5);
+    border-radius: 4px;
+}
