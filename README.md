@@ -25,4 +25,6 @@ var tt=new FeatureTooltip({
 
 `highlightStyle` - style to highlight feature. Falsey value means no highlight (default `false`)
 
+`layers` - a layer or an array of layers or false if tooltips are to be displayed for all layers (default: `false`)
+
 `text` - user-defined tooltip function. A `function(Array<Feature>)` that returns a string. If set, it overrides the default tooltip text function, therefore `showAll`, `attrs` and `showAttrNames` takes no effect
