@@ -10,6 +10,7 @@
  */
 function FeatureTooltip(options) {
     var opts=options||{};
+    this_=this;
     //
     // default options
     //
@@ -19,15 +20,17 @@ function FeatureTooltip(options) {
     this.attrs=false;
     // should attribute names be shown
     this.showAttrNames=true;
+    // layer, array of layers or false if tooltips are to be displayed for all layers
+    this.layers=false;
     // default tooltip function. can be overridden by any function(Array<Feature>) that returns a string.
     this.text=function(f) {
         var t='';
         for (var i=0;i<f.length;i++) {
             t+='<table class="ol-featuretooltip-table">';
-            var k=this.attrs||f[i].getKeys();
-            for (var j=0;j<k.length;j++)
-                if (k[j]!='geometry')
-                    t+=(this.showAttrNames?('<tr><th>'+k[j]+'</th>'):'')+'<td>'+f[i].get(k[j])+'</td></tr>';
+            var ps=f[i].getProperties();
+            for (var j in ps)
+                if (j!='geometry'&&(!this.attrs||this.attrs.indexOf(j)>=0))
+                    t+=(this.showAttrNames?('<tr><th>'+j+'</th>'):'')+'<td>'+ps[j]+'</td></tr>';
             t+='</table>';
             if (!this.showAll)
                 break;
@@ -56,32 +59,46 @@ function FeatureTooltip(options) {
     // array to store highlighted features and their original styles
     this.hlf=[];
     
+    // true if f is contained by one of the layers listed in this_.layers
+    function layersContain(f) {
+        // if a single layer is used, it is simple
+        if (!Array.isArray(this_.layers))
+            return this_.layers.getSource().hasFeature(f);
+        // otherways iterate over layer sources and return true if found something
+        for (var i=0;i<this_.layers.length;i++)
+            if (this_.layers[i].getSource().hasFeature(f))
+                return true;
+        // return false if no results
+        return false;
+    }
+    
     this.show=function(e) {
         var fs=[];
         if (e!==false)
-            this.map.forEachFeatureAtPixel(e.pixel,
+            this_.map.forEachFeatureAtPixel(e.pixel,
                 function(f) {
-                    fs.push(f);
+                    if (!this_.layers||layersContain(f))
+                        fs.push(f);
                 });
         // restore style of no longer highlighted features and highlight current ones
-        if (this.highlightStyle) {
-            while(this.hlf.length>0) {
-                var ff=this.hlf.shift();
+        if (this_.highlightStyle) {
+            while(this_.hlf.length>0) {
+                var ff=this_.hlf.shift();
                 ff.f.setStyle(ff.s);
             }
             for (var i=0;i<fs.length;i++) {
-                this.hlf.push({f:fs[i],s:fs[i].getStyle()});
-                fs[i].setStyle(this.highlightStyle);
-                if (!this.showAll)
+                this_.hlf.push({f:fs[i],s:fs[i].getStyle()});
+                fs[i].setStyle(this_.highlightStyle);
+                if (!this_.showAll)
                     break;
             }
         }
         // set tooltip content
-        var cont=this.text(fs);
-        this.div.style.display=cont?'':'none';
+        var cont=this_.text(fs);
+        this_.div.style.display=cont?'':'none';
         if (cont) {
-            this.ovl.setPosition(e.coordinate);
-            this.div.innerHTML=cont;
+            this_.ovl.setPosition(e.coordinate);
+            this_.div.innerHTML=cont;
         }
     };
     /** enable tooltips */
