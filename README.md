@@ -1,11 +1,12 @@
 # ol-featuretooltip
 Customizable feature tooltip for OpenLayers vector features
 ## Usage
-- Download ol-featuretooltip.js and ol-featuretooltip.css and include them in your html
+- Include ol-featuretooltip.js and ol-featuretooltip.css in your html
 ```html
-<link rel="stylesheet" href="ol-featuretooltip.css" type="text/css">
-<script src="ol-featuretooltip.js"></script>
+<link rel="stylesheet" href="https://samanbey.github.io/ol-featuretooltip/ol-featuretooltip.css" type="text/css">
+<script src="https://samanbey.github.io/ol-featuretooltip/ol-featuretooltip.js"></script>
 ```
+(You can also download it.)
 - Create a FeatureTooltip object. Options are given as an object literal:
 ```javascript
 var tt=new FeatureTooltip({
